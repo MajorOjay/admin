@@ -1,21 +1,29 @@
 const mysql = require('mysql');
+require('dotenv').config();
+
 module.exports = {
-    PORT: process.env.PORT || 5000,
+    PORT: process.env.PORT,
+
+    option: {
+        host           : process.env.DB_HOST,
+        user           : process.env.DB_USER,
+        password       : process.env.DB_PASSWORD,
+        database       : process.env.DB_NAME,
+    },
 
     connection: mysql.createConnection({
         multipleStatements: true,
-        host           : 'localhost',
-        user           : 'guardian',
-        password       : 'data052gem154',
-        database       : 'nascpdb',
+        host           : process.env.DB_HOST,
+        user           : process.env.DB_USER,
+        password       : process.env.DB_PASSWORD,
+        database       : process.env.DB_NAME,
     }),
 
     pool: mysql.createPool({
-        connectionLimit: 10,
-        host           : 'localhost',
-        user           : 'guardian',
-        password       : 'data052gem154',
-        database       : 'nascpdb',
+        host           : process.env.DB_HOST,
+        user           : process.env.DB_USER,
+        password       : process.env.DB_PASSWORD,
+        database       : process.env.DB_NAME,
     }),
 
     globalVariables: (req, res, next) => {
@@ -24,7 +32,8 @@ module.exports = {
         res.locals.user = req.user || null;
 
         next();
-    }
+    },
+
 }
 
 

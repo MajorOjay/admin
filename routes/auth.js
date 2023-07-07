@@ -6,6 +6,7 @@ const localStrategy = require('passport-local');
 const bcrypt = require('bcryptjs');
 const mysql = require('mysql')
 const {pool} = require('../config/config');
+const flash = require("connect-flash");
 
 router.all('/*', (req, res, next) => {
     req.app.locals.layout = 'auth';
@@ -16,6 +17,7 @@ router.all('/*', (req, res, next) => {
 router.get('/',  (req, res) => {
  res.redirect('auth/signin')
 });
+
 
 
 passport.use(new localStrategy({
@@ -71,28 +73,27 @@ router.route('/signin')
 router.post('/signin', (req, res) => {
     const email = req.body.email
     const password = req.body.password;
-
     pool.getConnection((err, connection) => {
         if (!err){
-            connection.query(`SELECT * FROM users WHERE email = ?`, email, (err, user) => {
+            connection.query(`SELECT * FROM admin_user WHERE email = ?`, email, (err, user) => {
                 if (user.length >= 1){
                     var userPassword = user[0].password;
                     bcrypt.compare(password, userPassword, (err, matchedPassword) => {
                         if (matchedPassword === true){
                             req.session.loggedin = true;
-                            req.session.user = user[0].first_name + ' ' + user[0].last_name;
-                            req.session.email = email;
-                            req.session.role = user[0].role;
+                            req.session.userfull = user[0].first_name + ' ' + user[0].last_name;
+                            req.session.user = user[0].first_name;
                             
                             
-                            res.redirect('/admin')
+                            res.redirect('/')
                         }else{
-                            res.send('Wrong Password')
+                            req.flash("msg", "Invalid password")
+                            res.redirect('/auth')
                         }
                     })
                 }else{
-                    console.log('No user with this email')
-                    res.send('No user with this email')
+                    req.flash("msg", "Invalid username")
+                    res.redirect('/auth')
                 }
             })
         }else{
@@ -101,6 +102,10 @@ router.post('/signin', (req, res) => {
     })
 });
 
+
+router.get('/404', (req, res) =>{
+    res.render('auth/404')
+})
 
 /*
 router.post('/signin', 

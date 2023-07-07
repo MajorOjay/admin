@@ -1,7 +1,8 @@
 const express = require('express');
 const path = require('path');
+require('dotenv').config();
 const hbs = require('express-handlebars');
-const {PORT, connection} = require('./config/config');
+const {option, PORT} = require('./config/config');
 const methodOverride = require('method-override');
 const session = require('express-session');
 const flash = require('connect-flash');
@@ -10,7 +11,7 @@ const passport  = require('passport');
 const nodemailer = require('nodemailer');
 const mysqlStore = require('express-mysql-session');
 const sitemap = require('express-sitemap');
-const multer = require('multer')
+const multer = require('multer');
 
 
 /* Express */
@@ -24,18 +25,14 @@ app.use(passport.initialize());
 
 
 /* MYSQL */
-const option = {
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'nascp'
-}
+
 
 const sessionStore = new mysqlStore(option);
 
 
 /* Flash and Sessions */
 app.use(flash());
+
 app.use(session({
     store: sessionStore,
     name: 'userSession',
@@ -62,13 +59,13 @@ app.set('view engine', 'handlebars');
 /* Routes */
 const defaultRoutes = require('./routes/defaultRoutes')
 app.use('/', defaultRoutes)
-const adminRoutes = require('./routes/adminRoutes');
-app.use('/admin', adminRoutes);
+
+
 const auth = require('./routes/auth');
 app.use('/auth', auth);
 
 app.use('/*', function(req, res) {
-    res.status(404).render('default/404')
+    res.status(404).redirect('auth/404')
 });
 
 app.listen(PORT, () =>  {

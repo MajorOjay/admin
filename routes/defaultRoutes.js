@@ -1,94 +1,98 @@
 const express = require('express');
 const router = express.Router();
 const defaultController = require('../controllers/defaultController');
-const passport = require('passport');
-const localStrategy = require('passport-local');
+const {loggedIn} = require('../config/customFunction');
+const bcrypt = require('bcryptjs');
+
 
 router.all('/*', (req, res, next) => {
-
     req.app.locals.layout = 'default';
 
     next();
-
 });
 
-
-
-
-passport.use(new localStrategy({
-    usernameField: 'email',
-    passReqToCallback: true
-}, (req, email, password, done) => {
-    User.findOne({email: email}).then(user => {
-        if (!user) {
-            return done(null, false)
-        }
-
-        bcrypt.compare(password, user.password, (err, passwordMatched) => {
-            if(err){
-                return errr;
-            }
-            
-            if (!passwordMatched){
-                return done(null, false)
-            }
-
-            return done(null, user)
-        });
-    });
-}));
-
-passport.serializeUser(function(user, done) {
-    done(null, user._id);
-});
-
-passport.deserializeUser(function(id, done){
-    User.findById(id, function(err, user){
-        done(err, user);
-    })
-});
-
-router.post('/signin', passport.authenticate('local', {
-    successRedirect: '/home',
-    failureRedirect: '/admin',
-    session: false
-})  
-
-);
-
-/*
-router.post('/signin', (req, res, next) => {
-    passport.authenticate('local', function(err, user, info){
-
-
-        
-        if (err) {  return next(err);}
-        if (!user){
-            res.redirect('/')
-        }
-        req.logIn(user, function(err){
-            if (err){return next(err);}
-            return res.send('finally')
-        });
-})(req, res, next)
-});
-
-*/
 
 router.route('/')
-    .get(defaultController.index);
+    .get(loggedIn, defaultController.index);
 
 
-router.route('/jobs/submit-success')
-    .get(defaultController.success);
+router.route('/dashboard')
+    .get(loggedIn, defaultController.index);
+
+router.route('/new-merchants')
+    .get(loggedIn, defaultController.newMerchants);
+
+router.route('/all-merchants')
+    .get(loggedIn, defaultController.allMerchants);
+
+router.route('/disabled-merchants')
+    .get(loggedIn, defaultController.disabledMerchants);
+
+router.route('/denied-merchants')
+    .get(loggedIn, defaultController.deniedMerchants);
+
+router.route('/enable/:id')
+    .get(loggedIn, defaultController.enableMerchant)
+
+router.route('/enabled/:id')
+    .get(loggedIn, defaultController.enabledMerchant)
 
 
-router.route('/jobs/:slug')
-    .get(defaultController.getJobDetails);
+router.route('/disable/:id')
+.get(loggedIn, defaultController.disableMerchant)
 
 
-router.route('/jobs/:id')
-.post(defaultController.submitJob)
+router.route('/merchant/:id')
+    .get(loggedIn, defaultController.merchant);
+
+router.route('/store/:id')
+    .get(loggedIn, defaultController.store);
+
+    
+router.route('/approve/:id')
+    .get(loggedIn, defaultController.approveMerchant)  
+    
+router.route('/deny/:id')
+    .get(loggedIn, defaultController.denyMerchant);  
+    
+
+
+router.route('/admin-users')
+    .get(loggedIn, defaultController.adminUsers);  
+
+router.route('/app-users')
+    .get(loggedIn, defaultController.appUsers)  
+
+router.route('/merchant-users')
+    .get(loggedIn, defaultController.merchantUsers)  
+    
+router.route('/edit-user/:id')
+    .get(loggedIn, defaultController.editUser)
+    .put(loggedIn, defaultController.updateUser);
+
+router.route('/delete-user/:id')
+    .get(loggedIn, defaultController.deleteUser);  
+
+router.route('/setup-payment')
+    .get(loggedIn, defaultController.setupPayment)  
+
+router.route('/payment-history')
+    .get(loggedIn, defaultController.paymentHistory)  
+
+router.route('/invoice')
+    .get(loggedIn, defaultController.invoice)  
+
+router.route('/scans')
+    .get(loggedIn, defaultController.scans)  
+
+
+
+router.get('/logout', (req, res) => {
+    req.session.destroy();
+   // req.flash('success', 'You have successfully logged out');
+    res.redirect('/auth')
+})
+ 
 
 
 router.get('/sitemap.xml', (req, res) => {

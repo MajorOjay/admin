@@ -1,7 +1,7 @@
 {
-  "name": "jobatrac",
+  "name": "Rezeet",
   "version": "1.0.0",
-  "description": "Jobatrac Application Tracking System",
+  "description": "Electronic Ticketing System",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js"
@@ -13,6 +13,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
+    "dotenv": "^16.3.1",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",
     "express-handlebars": "^5.3.4",

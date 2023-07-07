@@ -1,0 +1,85 @@
+  <div class="content-wrapper">
+	  <div class="container-full">
+		<!-- Content Header (Page header) -->
+		<div class="content-header">
+			<div class="d-flex align-items-center">
+				<div class="mr-auto">
+					<h3 class="page-title">Admins</h3>
+					<div class="d-inline-block align-items-center">
+						<nav>
+							<ol class="breadcrumb">
+								<li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i></a></li>
+								<li class="breadcrumb-item" aria-current="page">All Admins</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+
+		<!-- Main content -->
+		<section class="content">
+		  <div class="row">
+			  
+			<div class="col-12">
+
+			 <div class="box">
+				<div class="box-header with-border">
+				  <h3 class="box-title">Admin Users</h3>
+				</div>
+				<!-- /.box-header -->
+				<div class="box-body">
+					<div class="table-responsive">
+					  <table id="example5" class="table table-bordered table-striped" style="width:100%">
+						<thead>
+							<tr>
+								<th>First name</th>
+								<th>Last Name</th>
+								<th>Email</th>
+								<th>Status</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each user}}
+							<tr>
+								<td><a href="merchant/{{first_name}}"> {{first_name}} </a></td>
+								<td>{{last_name}}</td>
+								<td>{{email}}</td>
+								<td>{{status}}</td>
+								<td><a href="#" class="text-success mr-10" data-toggle="tooltip" data-original-title="Enable">
+											<i class="ti-check"></i>Enable
+										</a> 
+
+											<a href="#" class="text-danger" data-original-title="DIsable" data-toggle="tooltip">
+												<i class="ti-trash"></i>DIsable
+											</a>
+									</td>
+							</tr>
+							{{/each}}
+						</tbody>
+						<tfoot>
+							<tr>
+								<th>Name</th>
+								<th>Last Name</th>
+								<th>Email</th>
+								<th>Status</th>
+								<th> </th>
+							</tr>
+						</tfoot>
+					</table>
+					</div>
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  <!-- /.box -->      
+			</div> 
+
+			<!-- /.col -->
+		  </div>
+		  <!-- /.row -->
+		</section>
+		<!-- /.content -->
+	  </div>
+  </div>
